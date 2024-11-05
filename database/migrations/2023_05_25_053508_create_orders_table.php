@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_customer');
             $table->unsignedBigInteger('id_event');
             $table->enum('status', ['pending', 'success', 'failed']);
-            $table->string('snap_token');
-            $table->string('invoice');
+            $table->string('snap_token')->nullable();
+            $table->string('invoice')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

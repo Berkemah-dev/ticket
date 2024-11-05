@@ -44,8 +44,8 @@ class FrontController extends Controller
 
         $order = new Order();
         $order->id_customer = $data->id;
-        $order->id_concert = $request->id_concert;
-        $order->status = 'booking';
+        $order->id_event = $request->id_event;
+        $order->status = 'pending';
         $order->save();
 
 
@@ -55,7 +55,7 @@ class FrontController extends Controller
 
     public function payment($id)
     {
-        $data = Order::with('customer','concert')->findorfail($id);
+        $data = Order::with('customer','event')->findorfail($id);
         return view('frontend.payment', compact('data'));
     }
 
@@ -64,7 +64,7 @@ class FrontController extends Controller
         $data = new Ticket();
         $data->ticket_code = Str::random(8);
         $data->id_customer = $request->id_customer;
-        $data->id_concert = $request->id_concert;
+        $data->id_event = $request->id_event;
         $data->status = 0;
         $data->save();
 
