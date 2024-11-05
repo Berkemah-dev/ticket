@@ -9,13 +9,15 @@ class Ticket extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'id_customer', 'id');
     }
 
-    public function concert()
+    public function event()
     {
-        return $this->belongsTo(Concert::class, 'id_concert', 'id');
+        return $this->belongsTo(Event::class, 'id_event', 'id');
     }
 }

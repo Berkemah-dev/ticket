@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_customer');
-            $table->unsignedBigInteger('id_concert');
-            $table->string('status');
+            $table->unsignedBigInteger('id_event');
+            $table->enum('status', ['pending', 'success', 'failed']);
+            $table->string('snap_token');
+            $table->string('invoice');
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('id_customer')->references('id')->on('customers');
-            $table->foreign('id_concert')->references('id')->on('concerts');
+            $table->foreign('id_event')->references('id')->on('events');
         });
     }
 

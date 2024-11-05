@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('ticket_code')->unique();
             $table->unsignedBigInteger('id_customer');
-            $table->unsignedBigInteger('id_concert');
+            $table->unsignedBigInteger('id_event');
             $table->string('status');
             $table->timestamps();
 
             $table->foreign('id_customer')->references('id')->on('customers');
-            $table->foreign('id_concert')->references('id')->on('concerts');
+            $table->foreign('id_event')->references('id')->on('events');
         });
     }
 

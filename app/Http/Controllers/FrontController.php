@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Concert;
 use App\Models\Customer;
+use App\Models\Event;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -13,13 +14,13 @@ class FrontController extends Controller
 {
     public function index()
     {
-        $data = Concert::orderBy('id', 'desc')->get();
+        $data = Event::orderBy('id', 'desc')->get();
         return view('frontend.index', compact('data'));
     }
 
     public function booking($id)
     {
-        $data = Concert::findorfail($id);
+        $data = Event::findorfail($id);
         return view('frontend.booking', compact('data'));
     }
 
