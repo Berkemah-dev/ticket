@@ -21,6 +21,7 @@ Route::get('/', [FrontController::class, 'index'])->name('front.index');
 Route::get('/booking/{id}', [FrontController::class, 'booking'])->name('front.booking');
 Route::post('/booking/store', [FrontController::class, 'bookingStore'])->name('front.booking.store');
 Route::get('/booking/payment/{id}', [FrontController::class, 'payment'])->name('front.booking.payment');
+Route::get('/checkout/success/{transaction}', [FrontController::class, 'success'])->name('checkout.success');
 Route::post('/booking/payment/store', [FrontController::class, 'paymentStore'])->name('front.payment.store');
 Route::get('/ticket/{id}', [FrontController::class, 'ticketDetail'])->name('front.ticket');
 

@@ -36,6 +36,7 @@
                             enctype="multipart/form-data"
                         >
                             @csrf
+
                             <div class="card-header">
                                 <h3>{{$data->name}}</h3>
                                 <br />
@@ -49,6 +50,11 @@
                                     >Harga Tiket : Rp.
                                     {{number_format($data->price,0,',','.')}}</a
                                 >
+                                <input
+                                    type="hidden"
+                                    name="price"
+                                    value="{{ $data->price }}"
+                                />
                                 <input
                                     type="hidden"
                                     name="id_event"
