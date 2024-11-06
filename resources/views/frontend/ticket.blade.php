@@ -50,7 +50,11 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="bg-blue-700 px-4 py-6">Print</button>
+                        <a
+                            href="{{ route('print.ticket', $data->id) }}?export=pdf"
+                            class="bg-blue-700 px-4 py-6"
+                            >Print</a
+                        >
                     </div>
                 </div>
             </div>

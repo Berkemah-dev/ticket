@@ -7,9 +7,8 @@ use App\Models\Event;
 use App\Models\Order;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Midtrans\Transaction;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FrontController extends Controller
 {
@@ -118,5 +117,16 @@ class FrontController extends Controller
     {
         $data = Ticket::findorfail($id);
         return view('frontend.ticket', compact('data'));
+    }
+
+    public function printTiket(Request $request,$id){
+        $data = Ticket::where('id', $id)->firstOrFail();
+
+        if ($request->get('export') == 'pdf') {
+            $pdf = Pdf::loadView('frontend.pdf.ticket', ['data' => $data]);
+            return $pdf->stream('ticket.pdf');
+
+        }
+        return view('frontend.ticket', compact('data','request'));
     }
 }

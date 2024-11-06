@@ -24,6 +24,7 @@ Route::get('/booking/payment/{id}', [FrontController::class, 'payment'])->name('
 Route::get('/checkout/success/{transaction}', [FrontController::class, 'success'])->name('checkout.success');
 Route::post('/booking/payment/store', [FrontController::class, 'paymentStore'])->name('front.payment.store');
 Route::get('/ticket/{id}', [FrontController::class, 'ticketDetail'])->name('front.ticket');
+Route::get('/print/tiket/{id}', [FrontController::class, 'printTiket'])->name('print.ticket');
 
 Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
