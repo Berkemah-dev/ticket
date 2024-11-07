@@ -2,12 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-
         <title>Booking Tiket Konser</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
         <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
             rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
         />
     </head>
 
@@ -29,6 +31,55 @@
                         {{ session()->get('message') }}
                     </div>
                     @endif
+                    <div class="card-header">
+                        <h3>{{$data->name}}</h3>
+                        <br />
+                        <a>Venue : {{$data->venue}}</a
+                        ><br />
+                        <p></p>
+                            Waktu :
+                            {{\Carbon\Carbon::parse($data->start_time)->translatedFormat('l, d M Y')}}
+                        </p>
+                        <br />
+                        <p id="ticketPrice">
+                            Harga Tiket : Rp.
+                            {{number_format($data->price,0,',','.')}}
+                        </p>
+                        <input
+                        type="hidden"
+                        name="id_event"
+                        value="{{$data->id}}"
+                    />
+                        <input
+                            type="hidden"
+                            name="price"
+                            id="price"
+                            value="{{ $data->price }}"
+                        />
+
+
+                        <form id="formReferral">
+                            <div class="input-group mb-3">
+                                <input
+                                    type="text"
+                                    id="referral_code"
+                                    name="referral_code"
+                                    placeholder="Masukkan kode referral"
+                                    aria-label="Recipient's username"
+                                    aria-describedby="button-addon2"
+                                />
+                                <div class="input-group-append">
+                                    <button
+                                        class="btn btn-outline-secondary"
+                                        type="submit"
+                                        id="button-addon2"
+                                    >
+                                        Button
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <div class="card">
                         <form
                             action="{{ route('front.booking.store') }}"
@@ -36,31 +87,6 @@
                             enctype="multipart/form-data"
                         >
                             @csrf
-
-                            <div class="card-header">
-                                <h3>{{$data->name}}</h3>
-                                <br />
-                                <a>Venue : {{$data->venue}}</a
-                                ><br />
-                                <a
-                                    >Waktu :
-                                    {{\Carbon\Carbon::parse($data->start_time)->translatedFormat('l, d M Y')}}</a
-                                ><br />
-                                <a
-                                    >Harga Tiket : Rp.
-                                    {{number_format($data->price,0,',','.')}}</a
-                                >
-                                <input
-                                    type="hidden"
-                                    name="price"
-                                    value="{{ $data->price }}"
-                                />
-                                <input
-                                    type="hidden"
-                                    name="id_event"
-                                    value="{{$data->id}}"
-                                />
-                            </div>
                             <div class="card-body">
                                 <div class="p-4">
                                     <div class="row">
@@ -166,7 +192,53 @@
                 </div>
             </div>
         </section>
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+        <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            $("#formReferral").on("submit", function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                let diskon = parseInt($("#price").val()) * 0.10;
+                let total = parseInt($("#price").val()) - diskon;
+
+                // Pastikan total adalah angka bulat tanpa pecahan desimal
+                total = Math.floor(total);  // Atau bisa juga gunakan Math.round(total) jika ingin membulatkan ke angka terdekat
+
+                // Pastikan total tidak kurang dari 1
+                if (total < 1) {
+                    total = 1;  // Pastikan harga minimal 1
+                }
+                $.ajax({
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                            "content"
+                        ),
+                    },
+                    type: "POST",
+                    url: "{{ route('front.referral') }}",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                    // Jika referral code valid
+
+                        $("#price").val(total);
+                        $("#ticketPrice").html("Harga Tiket : Rp. " + total);
+
+                },
+                error: function(response) {
+
+                },
+                });
+            });
+        </script>
     </body>
 </html>

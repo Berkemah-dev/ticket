@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Affiliate;
 use App\Models\Customer;
 use App\Models\Event;
 use App\Models\Order;
 use App\Models\Ticket;
+use App\Models\TotalAffiliate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,9 +26,35 @@ class FrontController extends Controller
         return view('frontend.booking', compact('data'));
     }
 
+    public function referral(Request $request) {
+        try {
+            $validated = $request->validate([
+                'referral_code' => 'required|exists:affiliates,referral_code',
+            ]);
+
+            $affiliate = Affiliate::where('referral_code', $validated['referral_code'])->firstOrFail();
+
+            TotalAffiliate::create([
+                'affiliator_id' => $affiliate->affiliator_id,
+                'affiliate_id' => $affiliate->id,
+            ]);
+
+            return response()->json([
+                'message' => 'Referral code is valid',
+                'affiliate' => $affiliate
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Referral Error: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Terjadi kesalahan, silakan coba lagi.',
+            ], 500);
+        }
+    }
+
     public function bookingStore(Request $request)
     {
-        // dd(intval($request->input('price')));
+        \Log::info($request->id_event);
+
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required',
@@ -58,12 +86,17 @@ class FrontController extends Controller
         // Set 3DS transaction for credit card to true
         \Midtrans\Config::$is3ds = true;
 
-        // dd($data['name']);
-        // dd($data['email']);
+        $grossAmount = $request->input('price');
+        $grossAmount = floor($grossAmount);  // Membulatkan ke bawah ke angka bulat
+
+        // Pastikan bahwa gross_amount adalah integer dan minimal 1
+        if ($grossAmount < 1) {
+            $grossAmount = 1;
+        }
         $params = array(
             'transaction_details' => array(
                 'order_id' => 'order-' . time() . '-' . Str::random(5),
-                'gross_amount' => intval($request->input('price')),
+                'gross_amount' => $grossAmount,
             ),
             'customer_details' => array(
                 'first_name' => $data['name'],

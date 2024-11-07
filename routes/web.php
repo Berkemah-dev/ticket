@@ -23,6 +23,7 @@ Route::post('/booking/store', [FrontController::class, 'bookingStore'])->name('f
 Route::get('/booking/payment/{id}', [FrontController::class, 'payment'])->name('front.booking.payment');
 Route::get('/checkout/success/{transaction}', [FrontController::class, 'success'])->name('checkout.success');
 Route::post('/booking/payment/store', [FrontController::class, 'paymentStore'])->name('front.payment.store');
+Route::post('/referral', [FrontController::class, 'referral'])->name('front.referral');
 Route::get('/ticket/{id}', [FrontController::class, 'ticketDetail'])->name('front.ticket');
 Route::get('/print/tiket/{id}', [FrontController::class, 'printTiket'])->name('print.ticket');
 
