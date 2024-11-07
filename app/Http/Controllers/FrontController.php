@@ -44,7 +44,6 @@ class FrontController extends Controller
                 'affiliate' => $affiliate
             ]);
         } catch (\Exception $e) {
-            \Log::error('Referral Error: ' . $e->getMessage());
             return response()->json([
                 'message' => 'Terjadi kesalahan, silakan coba lagi.',
             ], 500);
@@ -53,7 +52,6 @@ class FrontController extends Controller
 
     public function bookingStore(Request $request)
     {
-        \Log::info($request->id_event);
 
         $this->validate($request, [
             'name' => 'required',
