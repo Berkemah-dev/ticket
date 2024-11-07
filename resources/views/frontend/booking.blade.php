@@ -49,7 +49,7 @@
                         type="hidden"
                         name="id_event"
                         value="{{$data->id}}"
-                    />
+                        />
                         <input
                             type="hidden"
                             name="price"
