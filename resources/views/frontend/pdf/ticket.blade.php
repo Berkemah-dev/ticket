@@ -43,16 +43,6 @@
                     <p class="text-sm text-gray-600">
                         Tunjukkan tiket ini di pintu masuk
                     </p>
-                    <div class="mt-4">
-                        <img
-                            src="/path/to/qr-code.png"
-                            alt="QR Code"
-                            class="w-24 h-24 mx-auto"
-                        />
-                    </div>
-                    <p class="text-sm text-gray-500 mt-2">
-                        Tanggal Event: {{$data->event->date}}
-                    </p>
                 </div>
             </div>
         </section>

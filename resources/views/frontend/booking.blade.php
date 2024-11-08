@@ -58,6 +58,12 @@
                                     id="price"
                                     value="{{ $data->price }}"
                                 />
+                                <input
+                                    type="hidden"
+                                    name="idTotalAffiliate"
+                                    id="idTotalAffiliate"
+
+                                />
                             </div>
                             <div class="card-body">
                                 <div class="p-4">
@@ -198,12 +204,10 @@
                 let diskon = parseInt($("#price").val()) * 0.10;
                 let total = parseInt($("#price").val()) - diskon;
 
-                // Pastikan total adalah angka bulat tanpa pecahan desimal
-                total = Math.floor(total);  // Atau bisa juga gunakan Math.round(total) jika ingin membulatkan ke angka terdekat
+                total = Math.floor(total);
 
-                // Pastikan total tidak kurang dari 1
                 if (total < 1) {
-                    total = 1;  // Pastikan harga minimal 1
+                    total = 1;
                 }
                 $.ajax({
                     headers: {
@@ -217,11 +221,9 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                    // Jika referral code valid
-
                         $("#price").val(total);
+                        $("#idTotalAffiliate").val(response.affiliate.id);
                         $("#ticketPrice").html("Harga Tiket : Rp. " + total);
-
                 },
                 error: function(response) {
 

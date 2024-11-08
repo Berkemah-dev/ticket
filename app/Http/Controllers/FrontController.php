@@ -34,14 +34,15 @@ class FrontController extends Controller
 
             $affiliate = Affiliate::where('referral_code', $validated['referral_code'])->firstOrFail();
 
-            TotalAffiliate::create([
+            $totalAffiliate = TotalAffiliate::create([
                 'affiliator_id' => $affiliate->affiliator_id,
                 'affiliate_id' => $affiliate->id,
+                'status' => 'pending'
             ]);
 
             return response()->json([
                 'message' => 'Referral code is valid',
-                'affiliate' => $affiliate
+                'affiliate' => $totalAffiliate,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -52,7 +53,6 @@ class FrontController extends Controller
 
     public function bookingStore(Request $request)
     {
-
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required',
@@ -75,6 +75,8 @@ class FrontController extends Controller
         $order->id_event = $request->id_event;
         $order->status = 'pending';
         $order->invoice = 'inv-'.time().'-'.Str::random(8);
+
+
         // Set your Merchant Server Key
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
@@ -101,10 +103,18 @@ class FrontController extends Controller
                 'email' => $data['email'],
             )
         );
-
+        $order->price = $grossAmount;
         $snapToken = \Midtrans\Snap::getSnapToken($params);
         $order->snap_token = $snapToken;
         $order->save();
+
+        $idTotalAffiliate = $request->input('idTotalAffiliate');
+        if ($idTotalAffiliate) {
+            $totalAffiliate =TotalAffiliate::where('id', $idTotalAffiliate)->firstOrFail();
+            $totalAffiliate['order_id'] = $order->id;
+            $totalAffiliate->save();
+        }
+
         return redirect()->route('front.booking.payment',$order->id)->with('message', 'Sukses. Silahkan lakukan pembayaran.');
     }
 
@@ -120,6 +130,18 @@ class FrontController extends Controller
         $order = Order::with('customer','event')->findorfail($id);
         $order['status'] = 'success';
         $order->save();
+
+        $usedRefferal = TotalAffiliate::where('order_id', $order->id)->where('status', 'pending')->first();
+
+        if ($usedRefferal) {
+            $usedRefferal->status = 'success';
+            $usedRefferal->save();
+        }
+
+        // TotalAffiliate::where('id_customer', $order->id_customer)
+        // ->where('order_id', '!=', $order->id)
+        // ->where('status', 'pending')
+        // ->delete();
 
         $data = new Ticket();
         $data->ticket_code = Str::random(8);

@@ -23,12 +23,22 @@ class TotalAffiliate extends Model
     }
 
     /**
-     * Get all of the affiliate for the TotalAffiliate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function affiliate(): HasMany
+        * Get the affiliate that owns the TotalAffiliate
+        *
+        * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    */
+    public function affiliate(): BelongsTo
     {
-        return $this->hasMany(Affiliate::class);
+        return $this->belongsTo(Affiliate::class);
+    }
+
+    /**
+     * Get the order that owns the TotalAffiliate
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

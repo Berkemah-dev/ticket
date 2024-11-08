@@ -53,7 +53,7 @@
                                         ><br />
                                         <a
                                             >Jumlah Dibayar : Rp.
-                                            {{number_format($data->event->price,0,',','.')}}</a
+                                            {{number_format($data->price,0,',','.')}}</a
                                         ><br />
                                         <a>Tanggal : {{$data->created_at}}</a
                                         ><br />

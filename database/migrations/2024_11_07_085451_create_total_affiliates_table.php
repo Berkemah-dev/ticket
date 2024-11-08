@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('affiliator_id')->constrained()->onDelete('cascade');
             $table->foreignId('affiliate_id')->constrained()->onDelete('cascade');
+            $table->enum('status', ['pending', 'success'])->nullable();
             $table->timestamps();
         });
     }

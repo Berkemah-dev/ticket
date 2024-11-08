@@ -52,7 +52,7 @@
                         </div>
                         <a
                             href="{{ route('print.ticket', $data->id) }}?export=pdf"
-                            class="bg-blue-700 px-4 py-6"
+                            class="btn btn-primary"
                             >Print</a
                         >
                     </div>
